@@ -1,55 +1,58 @@
 package com.example.weaterapp.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.weaterapp.model.CurrentWeather
 import com.example.weaterapp.model.WeatherForecast
 import com.example.weaterapp.service.RetrofitInstance
 import com.example.weaterapp.service.WeatherService
+import com.example.weaterapp.util.ApiState
+import com.example.weaterapp.util.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class WeatherRepository {
     val appid = "8f1460350c952343bddcd03c5d09be4d"
+    val currentWeather = MutableLiveData<Event<ApiState<CurrentWeather>>>()
+    val weatherForecast = MutableLiveData<Event<ApiState<WeatherForecast>>>()
 
-    var weatherService: WeatherService = RetrofitInstance
+    private var weatherService: WeatherService = RetrofitInstance
         .getRetrofitInstance()
         .create(WeatherService::class.java)
 
-    fun getCurrentWeather(lat: String, lon: String): LiveData<CurrentWeather> {
-        var weatherData = MutableLiveData<CurrentWeather>()
-
+    fun getCurrentWeather(lat: String, lon: String) {
+        currentWeather.postValue(Event(ApiState.Loading()))
         GlobalScope.launch(Dispatchers.IO) {
             val response = weatherService.getCurrentWeather(lat, lon, appid)
-            if (response != null) {
-                weatherData.postValue(response.body())
+            if (response.isSuccessful) {
+                currentWeather.postValue(Event(ApiState.Success(response.body())))
+            } else {
+                currentWeather.postValue(Event(ApiState.Error(response.message())))
             }
         }
-        return weatherData
     }
 
-    fun getWeatherForecast(lat: String, lon: String): LiveData<WeatherForecast> {
-        var weatherData = MutableLiveData<WeatherForecast>()
-
+    fun getWeatherForecast(lat: String, lon: String) {
+        weatherForecast.postValue(Event(ApiState.Loading()))
         GlobalScope.launch(Dispatchers.IO) {
             val response = weatherService.getWeatherForecast(lat, lon, appid)
-            if (response != null) {
-                weatherData.postValue(response.body())
+            if (response.isSuccessful) {
+                weatherForecast.postValue(Event(ApiState.Success(response.body())))
+            } else {
+                weatherForecast.postValue(Event(ApiState.Error(response.message())))
             }
         }
-        return weatherData
     }
 
-    fun getWeatherForecast(city: String): LiveData<WeatherForecast> {
-        var weatherData = MutableLiveData<WeatherForecast>()
-
+    fun getWeatherForecast(city: String) {
+        weatherForecast.postValue(Event(ApiState.Loading()))
         GlobalScope.launch(Dispatchers.IO) {
             val response = weatherService.getWeatherForecast(city, appid)
-            if (response != null) {
-                weatherData.postValue(response.body())
+            if (response.isSuccessful) {
+                weatherForecast.postValue(Event(ApiState.Success(response.body())))
+            } else {
+                weatherForecast.postValue(Event(ApiState.Error(response.message())))
             }
         }
-        return weatherData
     }
 }

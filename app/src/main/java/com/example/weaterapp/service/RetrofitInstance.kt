@@ -1,5 +1,6 @@
 package com.example.weaterapp.service
 
+import com.example.weaterapp.util.Helper.BASE_URL
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -9,7 +10,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitInstance {
     companion object {
-        private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
         fun getRetrofitInstance(): Retrofit {
 
