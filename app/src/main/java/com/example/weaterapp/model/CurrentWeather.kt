@@ -12,3 +12,19 @@ data class CurrentWeather(
     @SerializedName("name")
     var name: String
 )
+
+data class Weather(
+    @SerializedName("id")
+    var id: Int,
+    @SerializedName("main")
+    var main: String,
+    @SerializedName("description")
+    var description: String,
+    @SerializedName("icon")
+    var icon: String
+)
+
+data class Main(
+    @SerializedName("temp")
+    var temp: Double
+)
