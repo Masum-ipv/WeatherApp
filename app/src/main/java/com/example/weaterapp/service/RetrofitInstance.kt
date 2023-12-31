@@ -28,7 +28,7 @@ class RetrofitInstance {
                     .addQueryParameter("appid", API_KEY)
                     .build()
                 request = request.newBuilder().url(url).build()
-                chain.proceed(request)
+                    chain.proceed(request)
             }
 
             val client = OkHttpClient.Builder().apply {
