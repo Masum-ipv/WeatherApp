@@ -50,4 +50,7 @@ object Helper {
 
     val BASE_URL: String
         get() = "https://api.openweathermap.org/data/2.5/"
+
+    val API_KEY: String
+        get() = "8f1460350c952343bddcd03c5d09be4d"
 }

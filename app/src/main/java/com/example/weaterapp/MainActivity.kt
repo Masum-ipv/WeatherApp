@@ -25,14 +25,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     val PERMISSION_CODE = 2
 
-    // https://stackoverflow.com/questions/55024079/getting-user-current-location-using-fused-location-provider
-    // https://blog.devgenius.io/using-fused-location-provider-api-for-getting-location-in-android-f01034296bb
-    // https://sachankapil.medium.com/latest-method-how-to-get-current-location-latitude-and-longitude-in-android-give-support-for-c5132474c864
+
     /*
     //TODO:
-       3. Add okhttp interceptor with secured API_KEY req param
        4. Check network connectivity in okkhttp interceptor
+       https://stackoverflow.com/questions/51141970/check-internet-connectivity-android-in-kotlin
+
        5. Update location library
+           // https://stackoverflow.com/questions/55024079/getting-user-current-location-using-fused-location-provider
+    // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
+    // https://blog.devgenius.io/using-fused-location-provider-api-for-getting-location-in-android-f01034296bb
+    // https://sachankapil.medium.com/latest-method-how-to-get-current-location-latitude-and-longitude-in-android-give-support-for-c5132474c864
        6. Add offline caching
        7. Implement DI
        8. Fix UI issues

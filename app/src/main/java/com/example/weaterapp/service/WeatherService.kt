@@ -10,23 +10,20 @@ interface WeatherService {
     @GET("weather/")
     suspend fun getCurrentWeather(
         @Query("lat") lat: String,
-        @Query("lon") lon: String,
-        @Query("appid") appid: String
+        @Query("lon") lon: String
     ):
             Response<CurrentWeather>
 
     @GET("forecast/")
     suspend fun getWeatherForecast(
         @Query("lat") lat: String,
-        @Query("lon") lon: String,
-        @Query("appid") appid: String
+        @Query("lon") lon: String
     ):
             Response<WeatherForecast>
 
     @GET("forecast/")
     suspend fun getWeatherForecast(
-        @Query("q") city: String,
-        @Query("appid") appid: String
+        @Query("q") city: String
     ):
             Response<WeatherForecast>
 }
