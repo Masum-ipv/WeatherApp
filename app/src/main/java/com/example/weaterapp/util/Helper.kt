@@ -51,6 +51,7 @@ object Helper {
     }
 
     fun isOnline(context: Context): Boolean {
+        Log.d("TAGY", "Checking Network Connectivity")
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities =

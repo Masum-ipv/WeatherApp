@@ -18,18 +18,26 @@ import com.example.weaterapp.databinding.ActivityMainBinding
 import com.example.weaterapp.util.ApiState
 import com.example.weaterapp.util.Helper.getLocationData
 import com.example.weaterapp.viewmodel.WeatherViewModel
+import com.example.weaterapp.viewmodel.WeatherViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: WeatherViewModel
     private lateinit var recyclerView: RecyclerView
     val PERMISSION_CODE = 2
-
+    @Inject
+    lateinit var factory: WeatherViewModelFactory
 
     /*
     //TODO:
        4. Check network connectivity in okkhttp interceptor
        https://stackoverflow.com/questions/51141970/check-internet-connectivity-android-in-kotlin
+
+// https://proandroiddev.com/jwt-authentication-and-refresh-token-in-android-with-retrofit-interceptor-authenticator-da021f7f7534#6bd3
+
 
        5. Update location library
            // https://stackoverflow.com/questions/55024079/getting-user-current-location-using-fused-location-provider
@@ -37,14 +45,13 @@ class MainActivity : AppCompatActivity() {
     // https://blog.devgenius.io/using-fused-location-provider-api-for-getting-location-in-android-f01034296bb
     // https://sachankapil.medium.com/latest-method-how-to-get-current-location-latitude-and-longitude-in-android-give-support-for-c5132474c864
        6. Add offline caching
-       7. Implement DI
        8. Fix UI issues
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        viewModel = ViewModelProvider(this, factory)[WeatherViewModel::class.java]
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.HORIZONTAL, false
