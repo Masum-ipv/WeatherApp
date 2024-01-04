@@ -22,11 +22,15 @@ class WeatherRepository @Inject constructor(private val retrofitInstance: Retrof
     fun getCurrentWeather(lat: String, lon: String) {
         currentWeather.postValue(Event(ApiState.Loading()))
         GlobalScope.launch(Dispatchers.IO) {
-            val response = weatherService.getCurrentWeather(lat, lon)
-            if (response.isSuccessful) {
-                currentWeather.postValue(Event(ApiState.Success(response.body())))
-            } else {
-                currentWeather.postValue(Event(ApiState.Error(response.message())))
+            try {
+                val response = weatherService.getCurrentWeather(lat, lon)
+                if (response.isSuccessful) {
+                    currentWeather.postValue(Event(ApiState.Success(response.body())))
+                } else {
+                    currentWeather.postValue(Event(ApiState.Error(response.message())))
+                }
+            } catch (e: Exception) {
+                currentWeather.postValue(Event(ApiState.Error(e.message!!)))
             }
         }
     }
@@ -34,11 +38,15 @@ class WeatherRepository @Inject constructor(private val retrofitInstance: Retrof
     fun getWeatherForecast(lat: String, lon: String) {
         weatherForecast.postValue(Event(ApiState.Loading()))
         GlobalScope.launch(Dispatchers.IO) {
-            val response = weatherService.getWeatherForecast(lat, lon)
-            if (response.isSuccessful) {
-                weatherForecast.postValue(Event(ApiState.Success(response.body())))
-            } else {
-                weatherForecast.postValue(Event(ApiState.Error(response.message())))
+            try {
+                val response = weatherService.getWeatherForecast(lat, lon)
+                if (response.isSuccessful) {
+                    weatherForecast.postValue(Event(ApiState.Success(response.body())))
+                } else {
+                    weatherForecast.postValue(Event(ApiState.Error(response.message())))
+                }
+            } catch (e: Exception) {
+                currentWeather.postValue(Event(ApiState.Error(e.message!!)))
             }
         }
     }
@@ -46,12 +54,18 @@ class WeatherRepository @Inject constructor(private val retrofitInstance: Retrof
     fun getWeatherForecast(city: String) {
         weatherForecast.postValue(Event(ApiState.Loading()))
         GlobalScope.launch(Dispatchers.IO) {
-            val response = weatherService.getWeatherForecast(city)
-            if (response.isSuccessful) {
-                weatherForecast.postValue(Event(ApiState.Success(response.body())))
-            } else {
-                weatherForecast.postValue(Event(ApiState.Error(response.message())))
+            try {
+
+                val response = weatherService.getWeatherForecast(city)
+                if (response.isSuccessful) {
+                    weatherForecast.postValue(Event(ApiState.Success(response.body())))
+                } else {
+                    weatherForecast.postValue(Event(ApiState.Error(response.message())))
+                }
+            } catch (e: Exception) {
+                currentWeather.postValue(Event(ApiState.Error(e.message!!)))
             }
         }
     }
+
 }

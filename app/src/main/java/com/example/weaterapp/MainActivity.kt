@@ -33,12 +33,6 @@ class MainActivity : AppCompatActivity() {
 
     /*
     //TODO:
-       4. Check network connectivity in okkhttp interceptor
-       https://stackoverflow.com/questions/51141970/check-internet-connectivity-android-in-kotlin
-
-// https://proandroiddev.com/jwt-authentication-and-refresh-token-in-android-with-retrofit-interceptor-authenticator-da021f7f7534#6bd3
-
-
        5. Update location library
            // https://stackoverflow.com/questions/55024079/getting-user-current-location-using-fused-location-provider
     // https://developer.android.com/develop/sensors-and-location/location/retrieve-current

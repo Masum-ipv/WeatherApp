@@ -51,29 +51,23 @@ object Helper {
     }
 
     fun isOnline(context: Context): Boolean {
-        Log.d("TAGY", "Checking Network Connectivity")
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                Log.i("TAGY", "NetworkCapabilities.TRANSPORT_CELLULAR")
                 return true
             } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                Log.i("TAGY", "NetworkCapabilities.TRANSPORT_WIFI")
                 return true
             } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                Log.i("TAGY", "NetworkCapabilities.TRANSPORT_ETHERNET")
                 return true
             }
         }
+        Log.d("TAGY", "No Internet Connection")
         return false
     }
-
-    val BASE_URL: String
-        get() = "https://api.openweathermap.org/data/2.5/"
-
-    val API_KEY: String
-        get() = "8f1460350c952343bddcd03c5d09be4d"
 }
