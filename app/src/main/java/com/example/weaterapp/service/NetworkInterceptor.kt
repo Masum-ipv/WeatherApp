@@ -1,25 +1,19 @@
 package com.example.weaterapp.service
 
 import android.content.Context
-import com.example.weaterapp.util.Constants.API_KEY
-import com.example.weaterapp.util.Constants.BASE_URL
-import com.example.weaterapp.util.Helper.isOnline
+import com.example.weaterapp.util.Constants
+import com.example.weaterapp.util.Helper
 import com.example.weaterapp.util.NoNetworkException
-import com.google.gson.GsonBuilder
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-
-class RetrofitInstance {
+class NetworkInterceptor {
     companion object {
-        fun getRetrofitInstance(context: Context): Retrofit {
-
+        fun getInterceptor(context: Context): OkHttpClient {
             //Show network information in to the logcat
             val loggingInterceptor = HttpLoggingInterceptor().apply {
                 this.level = HttpLoggingInterceptor.Level.BODY
@@ -28,14 +22,14 @@ class RetrofitInstance {
             val clientInterceptor = Interceptor { chain: Interceptor.Chain ->
                 var request: Request = chain.request()
                 val url: HttpUrl = request.url.newBuilder()
-                    .addQueryParameter("appid", API_KEY)
+                    .addQueryParameter("appid", Constants.API_KEY)
                     .build()
                 request = request.newBuilder().url(url).build()
                 chain.proceed(request)
             }
 
             val internetInterceptor = Interceptor { chain: Interceptor.Chain ->
-                if (!isOnline(context)) {
+                if (!Helper.isOnline(context)) {
                     throw NoNetworkException()
                 } else {
                     val request: Request = chain.request().newBuilder().build()
@@ -52,13 +46,7 @@ class RetrofitInstance {
                     .readTimeout(20, TimeUnit.SECONDS)
                     .writeTimeout(25, TimeUnit.SECONDS)
             }.build()
-
-
-            return Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-                .build()
+            return client
         }
     }
 }

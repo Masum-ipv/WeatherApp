@@ -12,12 +12,10 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-class WeatherRepository @Inject constructor(private val retrofitInstance: Retrofit) {
+class WeatherRepository @Inject constructor(private val weatherService: WeatherService) {
 
     val currentWeather = MutableLiveData<Event<ApiState<CurrentWeather>>>()
     val weatherForecast = MutableLiveData<Event<ApiState<WeatherForecast>>>()
-
-    private var weatherService: WeatherService = retrofitInstance.create(WeatherService::class.java)
 
     fun getCurrentWeather(lat: String, lon: String) {
         currentWeather.postValue(Event(ApiState.Loading()))

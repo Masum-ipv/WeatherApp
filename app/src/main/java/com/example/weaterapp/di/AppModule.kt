@@ -2,14 +2,17 @@ package com.example.weaterapp.di
 
 import android.content.Context
 import com.example.weaterapp.repository.WeatherRepository
-import com.example.weaterapp.service.RetrofitInstance
+import com.example.weaterapp.service.NetworkInterceptor
 import com.example.weaterapp.service.WeatherService
+import com.example.weaterapp.util.Constants
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -18,17 +21,25 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(@ApplicationContext context: Context): Retrofit =
-        RetrofitInstance.getRetrofitInstance(context)
+    fun provideRetrofit(): Retrofit.Builder =
+        Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+
 
     @Singleton
     @Provides
-    fun providesRepository(retrofitInstance: Retrofit): WeatherRepository =
-        WeatherRepository(retrofitInstance)
+    fun providesRepository(weatherService: WeatherService): WeatherRepository =
+        WeatherRepository(weatherService)
 
+    @Singleton
+    @Provides
     fun providesWeatherService(
-        @ApplicationContext context: Context,
-        retrofitBuilder: Retrofit.Builder
+        retrofitBuilder: Retrofit.Builder,
+        @ApplicationContext context: Context
     ): WeatherService =
-        retrofitBuilder.build().create(WeatherService::class.java)
+        retrofitBuilder
+            .client(NetworkInterceptor.getInterceptor(context))
+            .build()
+            .create(WeatherService::class.java)
 }
