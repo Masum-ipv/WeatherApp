@@ -14,6 +14,12 @@ interface WeatherService {
     ):
             Response<CurrentWeather>
 
+    @GET("weather/")
+    suspend fun getCurrentWeather(
+        @Query("q") city: String
+    ):
+            Response<CurrentWeather>
+
     @GET("forecast/")
     suspend fun getWeatherForecast(
         @Query("lat") lat: String,

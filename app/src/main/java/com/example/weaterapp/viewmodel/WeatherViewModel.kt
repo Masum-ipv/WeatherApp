@@ -23,6 +23,10 @@ class WeatherViewModel @Inject constructor(
         repository.getCurrentWeather(lat, lon)
     }
 
+    fun getCurrentWeather(city: String) {
+        repository.getCurrentWeather(city)
+    }
+
     fun getWeatherForecast(lat: String, lon: String) {
         repository.getWeatherForecast(lat, lon)
     }

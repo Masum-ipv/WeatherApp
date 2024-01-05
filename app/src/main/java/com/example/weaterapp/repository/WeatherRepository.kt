@@ -33,6 +33,22 @@ class WeatherRepository @Inject constructor(private val weatherService: WeatherS
         }
     }
 
+    fun getCurrentWeather(city: String) {
+        currentWeather.postValue(Event(ApiState.Loading()))
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val response = weatherService.getCurrentWeather(city)
+                if (response.isSuccessful) {
+                    currentWeather.postValue(Event(ApiState.Success(response.body())))
+                } else {
+                    currentWeather.postValue(Event(ApiState.Error(response.message())))
+                }
+            } catch (e: Exception) {
+                currentWeather.postValue(Event(ApiState.Error(e.message!!)))
+            }
+        }
+    }
+
     fun getWeatherForecast(lat: String, lon: String) {
         weatherForecast.postValue(Event(ApiState.Loading()))
         GlobalScope.launch(Dispatchers.IO) {

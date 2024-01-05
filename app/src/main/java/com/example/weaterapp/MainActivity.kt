@@ -3,7 +3,6 @@ package com.example.weaterapp
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +21,7 @@ import com.example.weaterapp.viewmodel.WeatherViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -32,14 +32,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var factory: WeatherViewModelFactory
 
     /*
-    //TODO:
-       5. Update location library
+    //TODO: 1. Update location library
            // https://stackoverflow.com/questions/55024079/getting-user-current-location-using-fused-location-provider
     // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
     // https://blog.devgenius.io/using-fused-location-provider-api-for-getting-location-in-android-f01034296bb
     // https://sachankapil.medium.com/latest-method-how-to-get-current-location-latitude-and-longitude-in-android-give-support-for-c5132474c864
-       6. Add offline caching
-       8. Fix UI issues
+       2. Add offline caching
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,21 +56,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Make the Edit Text Clickable, call for weather forecast
-        binding.cityET.setOnTouchListener(object : View.OnTouchListener {
-
-            override fun onTouch(p0: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        val city = binding.cityET.text.trim().toString()
-                        if (!city.isNullOrEmpty()) {
-                            Log.d("TAGY", "City Name: $city")
-                            viewModel.getWeatherForecast(city)
-                        }
-                    }
-                }
-                return p0?.onTouchEvent(event) ?: true
+        binding.searchIcon.setOnClickListener {
+            val city = binding.cityET.text.trim().toString()
+            if (city.isNotEmpty()) {
+                Log.d("TAGY", "City Name: $city")
+                viewModel.getCurrentWeather(city)
+                viewModel.getWeatherForecast(city)
             }
-        })
+        }
 
         // Get current weather data
         viewModel.currentWeather.observe(this, Observer {
@@ -83,16 +74,14 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     is ApiState.Success -> {
-                        binding.progressBar.visibility = View.GONE
                         Log.d("TAGY", "Current Weather City Name: " + it.data!!.name)
+
+                        binding.progressBar.visibility = View.GONE
                         binding.countryName.text = it.data.name
-
                         binding.weatherTV.text = it.data.weather[0].main
-
                         // Set the Temperature
                         var temp = String.format("%.2f", (it.data.main.temp - 273.15))
                         binding.tempTV.text = temp + " \u2103"
-
                         // Set the Icon
                         Glide.with(this@MainActivity).load(
                             "https://openweathermap.org/img/wn/" +
