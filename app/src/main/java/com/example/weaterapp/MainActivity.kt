@@ -31,14 +31,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var factory: WeatherViewModelFactory
 
-    /*
-    //TODO: 1. Update location library
-           // https://stackoverflow.com/questions/55024079/getting-user-current-location-using-fused-location-provider
-    // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
-    // https://blog.devgenius.io/using-fused-location-provider-api-for-getting-location-in-android-f01034296bb
-    // https://sachankapil.medium.com/latest-method-how-to-get-current-location-latitude-and-longitude-in-android-give-support-for-c5132474c864
-       2. Add offline caching
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,10 +42,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         val (lat, lon) = getLocationData(this)
-        if (lat.isNotEmpty() && lon.isNotEmpty()) {
-            viewModel.getCurrentWeather(lat, lon)
-            viewModel.getWeatherForecast(lat, lon)
-        }
+        viewModel.getCurrentWeather(lat.toString(), lon.toString())
+        viewModel.getWeatherForecast(lat.toString(), lon.toString())
 
         // Make the Edit Text Clickable, call for weather forecast
         binding.searchIcon.setOnClickListener {

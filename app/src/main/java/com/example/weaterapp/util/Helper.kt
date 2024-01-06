@@ -10,16 +10,16 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 object Helper {
 
-    fun getLocationData(context: Context): Pair<String, String> {
+    fun getLocationData(context: Context): Pair<Double, Double> {
         val PERMISSION_CODE = 2
-        var lat = "0"
-        var lon = "0"
+        var lat = 0.0
+        var lon = 0.0
 
-        val locationManager =
-            context.getSystemService(Context.LOCATION_SERVICE)!! as LocationManager
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -37,16 +37,15 @@ object Helper {
                 ), PERMISSION_CODE
             )
         }
-        // Need to handle the permission Deny case
-        val location: Location? =
-            locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        if (location != null) {
-            lat = location.latitude.toString()
-            lon = location.longitude.toString()
-            Log.d("TAGY", "Lat: $lat Lon: $lon")
-        } else {
-            Log.e("TAGY", "No location data found")
-        }
+        //TODO: Need to handle the permission Deny case
+        val fusedLocationClient: FusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(context)
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                lat = location!!.latitude
+                lon = location!!.longitude
+                Log.d("TAGY", "Lat: $lat Lon: $lon")
+            }
         return Pair(lat, lon)
     }
 
