@@ -1,3 +1,2 @@
 # WeatherApp
-
-![alt text](https://github.com/Masum-ipv/WeatherApp/blob/master/screenshot.png?raw=true)
+<img src="https://github.com/Masum-ipv/WeatherApp/blob/master/screenshot.png" width=50% height=30%>
