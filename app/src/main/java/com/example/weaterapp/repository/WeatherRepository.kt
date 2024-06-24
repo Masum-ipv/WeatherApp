@@ -81,5 +81,4 @@ class WeatherRepository @Inject constructor(private val weatherService: WeatherS
             }
         }
     }
-
 }

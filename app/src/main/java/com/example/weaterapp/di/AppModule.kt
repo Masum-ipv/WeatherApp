@@ -1,6 +1,7 @@
 package com.example.weaterapp.di
 
 import android.content.Context
+import com.example.weaterapp.repository.DataStoreRepository
 import com.example.weaterapp.repository.WeatherRepository
 import com.example.weaterapp.service.NetworkInterceptor
 import com.example.weaterapp.service.WeatherService
@@ -29,8 +30,13 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun providesRepository(weatherService: WeatherService): WeatherRepository =
+    fun providesWeatherRepository(weatherService: WeatherService): WeatherRepository =
         WeatherRepository(weatherService)
+
+    @Singleton
+    @Provides
+    fun providesDataStoreRepository(@ApplicationContext context: Context): DataStoreRepository =
+        DataStoreRepository(context)
 
     @Singleton
     @Provides

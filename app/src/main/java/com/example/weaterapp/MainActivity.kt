@@ -15,48 +15,87 @@ import com.bumptech.glide.Glide
 import com.example.weaterapp.adapter.ForecastAdapter
 import com.example.weaterapp.databinding.ActivityMainBinding
 import com.example.weaterapp.util.ApiState
+import com.example.weaterapp.util.Constants.IMAGE_URL
 import com.example.weaterapp.util.Helper.getLocationData
+import com.example.weaterapp.viewmodel.DataStoreViewModel
 import com.example.weaterapp.viewmodel.WeatherViewModel
-import com.example.weaterapp.viewmodel.WeatherViewModelFactory
+import com.example.weaterapp.viewmodel.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
+/*
+TODO: 1. Change temp with the change of Unit
+2. save last known location in DataStore
+3. Add network connectivity check
+4. Add Push Notification(Also update CV)
+*/
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: WeatherViewModel
+    private lateinit var weatherViewModel: WeatherViewModel
+    private lateinit var dataViewModel: DataStoreViewModel
     private lateinit var recyclerView: RecyclerView
     val PERMISSION_CODE = 2
+
     @Inject
-    lateinit var factory: WeatherViewModelFactory
+    lateinit var factory: ViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        viewModel = ViewModelProvider(this, factory)[WeatherViewModel::class.java]
+        weatherViewModel = ViewModelProvider(this, factory)[WeatherViewModel::class.java]
+        dataViewModel = ViewModelProvider(this, factory)[DataStoreViewModel::class.java]
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.HORIZONTAL, false
         )
 
+        // Get current city lat long
         val (lat, lon) = getLocationData(this)
-        viewModel.getCurrentWeather(lat.toString(), lon.toString())
-        viewModel.getWeatherForecast(lat.toString(), lon.toString())
+        Log.d("TAGY", "Current city: Lat $lat Lon $lon")
+        weatherViewModel.getCurrentWeather(lat.toString(), lon.toString())
+        weatherViewModel.getWeatherForecast(lat.toString(), lon.toString())
 
-        // Make the Edit Text Clickable, call for weather forecast
+        // Get Temperature Unit
+        dataViewModel.getTempUnit()
+        dataViewModel.tempUnit.observe(this) { unit ->
+            Log.d("TAGY", "Temperature Unit: $unit")
+            if (unit != null) {
+                if (unit) {
+                    binding.toggleSwitch.isChecked = true
+                    binding.toggleSwitch.text = "\u2103"
+                } else {
+                    binding.toggleSwitch.isChecked = false
+                    binding.toggleSwitch.text = "\u2109"
+                }
+            }
+        }
+
+        // After click Search Icon, call for weather forecast
         binding.searchIcon.setOnClickListener {
             val city = binding.cityET.text.trim().toString()
             if (city.isNotEmpty()) {
                 Log.d("TAGY", "City Name: $city")
-                viewModel.getCurrentWeather(city)
-                viewModel.getWeatherForecast(city)
+                weatherViewModel.getCurrentWeather(city)
+                weatherViewModel.getWeatherForecast(city)
             }
         }
 
+        // Clicking on toggle switch button to change Temp Unit
+        binding.toggleSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                Log.d("TAGY", "Temp is now showing in C")
+                dataViewModel.saveTempUnit(true)
+            } else {
+                Log.d("TAGY", "Temp is now showing in F") //Default value
+                dataViewModel.saveTempUnit(false)
+            }
+            dataViewModel.getTempUnit()
+        }
+
         // Get current weather data
-        viewModel.currentWeather.observe(this, Observer {
+        weatherViewModel.currentWeather.observe(this, Observer { it ->
             it.getContentIfNotHandled()?.let {
                 when (it) {
                     is ApiState.Loading -> {
@@ -70,12 +109,11 @@ class MainActivity : AppCompatActivity() {
                         binding.countryName.text = it.data.name
                         binding.weatherTV.text = it.data.weather[0].main
                         // Set the Temperature
-                        var temp = String.format("%.2f", (it.data.main.temp - 273.15))
+                        var temp = String.format("%.0f", (it.data.main.temp - 273.15))
                         binding.tempTV.text = temp + " \u2103"
                         // Set the Icon
                         Glide.with(this@MainActivity).load(
-                            "https://openweathermap.org/img/wn/" +
-                                    it.data.weather[0].icon + ".png"
+                            IMAGE_URL + it.data.weather[0].icon + ".png"
                         ).into(binding.weatherIcon)
                     }
 
@@ -89,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Get weather forecast data
-        viewModel.weatherForecast.observe(this, Observer {
+        weatherViewModel.weatherForecast.observe(this, Observer {
             it.getContentIfNotHandled()?.let {
                 when (it) {
                     is ApiState.Loading -> {

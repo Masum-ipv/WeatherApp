@@ -9,6 +9,7 @@ import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -42,9 +43,14 @@ object Helper {
             LocationServices.getFusedLocationProviderClient(context)
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
-                lat = location!!.latitude
-                lon = location!!.longitude
-                Log.d("TAGY", "Lat: $lat Lon: $lon")
+                if (location != null) {
+                    lat = location.latitude
+                    lon = location.longitude
+                    Log.d("TAGY", "Lat: $lat Lon: $lon")
+                } else {
+                    Toast.makeText(context, "No location detected", Toast.LENGTH_SHORT).show();
+                }
+
             }
         return Pair(lat, lon)
     }

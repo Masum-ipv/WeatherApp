@@ -34,5 +34,4 @@ class WeatherViewModel @Inject constructor(
     fun getWeatherForecast(city: String) {
         repository.getWeatherForecast(city)
     }
-
 }

@@ -8,10 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weaterapp.R
 import com.example.weaterapp.databinding.WeatherItemBinding
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.TimeZone
+import com.example.weaterapp.util.Constants
 
 class ForecastAdapter(
     private val context: Context,
@@ -25,14 +22,13 @@ class ForecastAdapter(
         fun bind(context: Context, weatherForecast: com.example.weaterapp.model.List) {
             binding.timeTV.text = weatherForecast.dtTxt
 
-            var temp = String.format("%.2f", (weatherForecast.main.temp - 273.15))
+            val temp = String.format("%.2f", (weatherForecast.main.temp - 273.15))
             binding.tempTV.text = temp + " \u2103"
 
             binding.windTV.text = weatherForecast.wind.speed.toString() + " Km/h"
 
             Glide.with(context).load(
-                "https://openweathermap.org/img/wn/" +
-                        weatherForecast.weather.get(0).icon + ".png"
+                Constants.IMAGE_URL + weatherForecast.weather.get(0).icon + ".png"
             ).into(binding.weatherIcon)
         }
 
