@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weaterapp.repository.DataStoreRepository
+import com.example.weaterapp.util.Constants.LAT
+import com.example.weaterapp.util.Constants.LON
 import com.example.weaterapp.util.Constants.TEMP_UNIT
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -22,7 +24,27 @@ class DataStoreViewModel @Inject constructor(
         }
     }
 
+    fun saveLatitude(value: String) {
+        viewModelScope.launch {
+            repository.putString(LAT, value)
+        }
+    }
+
+    fun saveLongitude(value: String) {
+        viewModelScope.launch {
+            repository.putString(LON, value)
+        }
+    }
+
     fun getTempUnit() = runBlocking {
         repository.getBoolean(TEMP_UNIT)
+    }
+
+    fun getLatitude(): String? = runBlocking {
+        repository.getString(LAT)
+    }
+
+    fun getLongitude(): String? = runBlocking {
+        repository.getString(LON)
     }
 }

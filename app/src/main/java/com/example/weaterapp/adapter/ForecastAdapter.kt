@@ -22,7 +22,7 @@ class ForecastAdapter(
         fun bind(context: Context, weatherForecast: com.example.weaterapp.model.List) {
             binding.timeTV.text = weatherForecast.dtTxt
 
-            val temp = String.format("%.2f", (weatherForecast.main.temp - 273.15))
+            val temp = String.format("%.0f", (weatherForecast.main.temp - 273.15))
             binding.tempTV.text = temp + " \u2103"
 
             binding.windTV.text = weatherForecast.wind.speed.toString() + " Km/h"

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
@@ -16,11 +15,12 @@ import com.google.android.gms.location.LocationServices
 
 object Helper {
 
-    fun getLocationData(context: Context): Pair<Double, Double> {
-        val PERMISSION_CODE = 2
-        var lat = 0.0
-        var lon = 0.0
+    //Default value
+    private var lat = "0.0"
+    private var lon = "0.0"
+    val PERMISSION_CODE = 2
 
+    fun getLocationData(context: Context): Pair<String, String> {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -44,9 +44,10 @@ object Helper {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
-                    lat = location.latitude
-                    lon = location.longitude
+                    lat = location.latitude.toString()
+                    lon = location.longitude.toString()
                     Log.d("TAGY", "Lat: $lat Lon: $lon")
+
                 } else {
                     Toast.makeText(context, "No location detected", Toast.LENGTH_SHORT).show();
                 }

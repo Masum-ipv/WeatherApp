@@ -24,9 +24,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /*
-TODO: 1. Change temp with the change of Unit
-2. save last known location in DataStore
-3. Add network connectivity check
+TODO: 1. Change temp value with the change of Unit
+
+2. Add network connectivity check
 4. Add Push Notification(Also update CV)
 */
 @AndroidEntryPoint
@@ -52,10 +52,18 @@ class MainActivity : AppCompatActivity() {
         )
 
         // Get current city lat long
-        val (lat, lon) = getLocationData(this)
+        var (lat, lon) = getLocationData(this)
+        // If no location found, get last known location
+        if (lat == "0.0" || lon == "0.0") {
+            lat = dataViewModel.getLatitude() ?: "0.0"
+            lon = dataViewModel.getLongitude() ?: "0.0"
+        } else {
+            dataViewModel.saveLatitude(lat)
+            dataViewModel.saveLongitude(lon)
+        }
         Log.d("TAGY", "Current city: Lat $lat Lon $lon")
-        weatherViewModel.getCurrentWeather(lat.toString(), lon.toString())
-        weatherViewModel.getWeatherForecast(lat.toString(), lon.toString())
+        weatherViewModel.getCurrentWeather(lat, lon)
+        weatherViewModel.getWeatherForecast(lat, lon)
 
         // Get Temperature Unit
         dataViewModel.getTempUnit()
