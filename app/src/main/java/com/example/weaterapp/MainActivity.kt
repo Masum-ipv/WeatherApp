@@ -1,10 +1,12 @@
 package com.example.weaterapp
 
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -18,16 +20,14 @@ import com.example.weaterapp.util.ApiState
 import com.example.weaterapp.util.Constants.IMAGE_URL
 import com.example.weaterapp.util.Helper.getLocationData
 import com.example.weaterapp.viewmodel.DataStoreViewModel
-import com.example.weaterapp.viewmodel.WeatherViewModel
 import com.example.weaterapp.viewmodel.ViewModelFactory
+import com.example.weaterapp.viewmodel.WeatherViewModel
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /*
 TODO: 1. Change temp value with the change of Unit
-
-2. Add network connectivity check
-4. Add Push Notification(Also update CV)
 */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val builder = AlertDialog.Builder(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         weatherViewModel = ViewModelProvider(this, factory)[WeatherViewModel::class.java]
         dataViewModel = ViewModelProvider(this, factory)[DataStoreViewModel::class.java]
@@ -50,6 +51,31 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(
             this, LinearLayoutManager.HORIZONTAL, false
         )
+        FirebaseApp.initializeApp(this)
+
+        //When user click on notification [App state both Background & Foreground]
+        if (intent.extras != null) {
+            val title = intent.getStringExtra("NotificationTitle")
+            val body = intent.getStringExtra("NotificationBody")
+            Log.d("TAGY", "title: $title")
+            for (key in intent.extras!!.keySet()) {
+                val value = intent.extras!!.getString(key)
+                Log.d("TAGY", "Key>: $key Value>: $value")
+            }
+            if (title != null) {
+                //Will only work when app in foreground
+                builder.setTitle(title)
+                    .setMessage(body)
+                    .setNegativeButton("Dismiss"
+                    ) { dialogInterface, i -> dialogInterface.cancel() }
+                builder.create().show()
+
+                for (key in intent.extras!!.keySet()) {
+                    val value = intent.extras!!.getString(key)
+                    Log.d("TAGY", "Key: $key Value: $value")
+                }
+            }
+        }
 
         // Get current city lat long
         var (lat, lon) = getLocationData(this)

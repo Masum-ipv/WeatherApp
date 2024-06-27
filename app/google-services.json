@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "51898267699",
+    "project_id": "push-notification-5b7b5",
+    "storage_bucket": "push-notification-5b7b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51898267699:android:79f441b9ad63670d540b46",
+        "android_client_info": {
+          "package_name": "com.example.firebasepushnotification"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5quQ93wRZpOj6xhzI9LtBPu_uX4JEz5M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51898267699:android:02fd67c4579e1d48540b46",
+        "android_client_info": {
+          "package_name": "com.example.weaterapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5quQ93wRZpOj6xhzI9LtBPu_uX4JEz5M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
